@@ -37,7 +37,7 @@ module Fastlane
       Actions.lane_context[Actions::SharedValues::PLATFORM_NAME] = current_platform
       Actions.lane_context[Actions::SharedValues::LANE_NAME] = full_lane_name
 
-      Helper.log.info "Driving the lane '#{full_lane_name}' 🚀".green
+      UI.success "Driving the lane '#{full_lane_name}' 🚀"
 
       return_val = nil
 
@@ -101,7 +101,7 @@ module Fastlane
         pretty = [new_lane]
         pretty = [current_platform, new_lane] if current_platform
         Actions.execute_action("Switch to #{pretty.join(' ')} lane") {} # log the action
-        Helper.log.info "Cruising over to lane '#{pretty.join(' ')}' 🚖".green
+        UI.success "Cruising over to lane '#{pretty.join(' ')}' 🚖"
 
         # Actually switch lane now
         self.current_lane = new_lane
@@ -109,11 +109,11 @@ module Fastlane
         result = block.call(parameters.first || {}) # to always pass a hash
         self.current_lane = original_lane
 
-        Helper.log.info "Cruising back to lane '#{original_full}' 🚘".green
+        UI.success "Cruising back to lane '#{original_full}' 🚘".green
         return result
       else
         # No action and no lane, raising an exception now
-        Helper.log.error caller.join("\n")
+        UI.error caller.join("\n")
         raise "Could not find action or lane '#{new_lane}'. Check out the README for more details: https://github.com/KrauseFx/fastlane".red
       end
     end
