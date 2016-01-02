@@ -250,7 +250,7 @@ module Fastlane
 
         if Dir.exist?(clone_folder)
           # We want to re-clone if the folder already exists
-          Helper.log.info "Clearing the git repo..."
+          UI.message "Clearing the git repo..."
           Actions.sh("rm -rf '#{tmp_path}'")
         end
       end

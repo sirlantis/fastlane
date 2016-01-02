@@ -35,7 +35,7 @@ module Fastlane
       output << "The documentation of fastlane can be found on [GitHub](https://github.com/KrauseFx/fastlane)"
 
       File.write(output_path, output.join("\n"))
-      Helper.log.info "Successfully generated documentation to path '#{File.expand_path(output_path)}'".green
+      UI.success "Successfully generated documentation to path '#{File.expand_path(output_path)}'"
     end
 
     #####################################################

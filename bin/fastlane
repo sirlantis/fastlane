@@ -160,8 +160,21 @@ end
 begin
   FastlaneCore::UpdateChecker.start_looking_for_update('fastlane')
   FastlaneApplication.new.run
-rescue => ex
-  FastlaneCore::CrashReporting.handle_crash(ex)
+rescue => ex #Exception => ex
+  # require 'pry'
+  # binding.pry
+  if ex.kind_of?(FastlaneCore::UserError)
+    # We don't want to submit a crash report
+  else
+    FastlaneCore::CrashReporting.handle_crash(ex)
+  end
+rescue Interrupt => ex
+  # We catch it so that the stack trace is hidden by default
+  if $verbose
+    raise ex
+  else
+    puts "\nCancelled... use --verbose to show the stack trace"
+  end
 ensure
   FastlaneCore::UpdateChecker.show_update_status('fastlane', Fastlane::VERSION)
 end

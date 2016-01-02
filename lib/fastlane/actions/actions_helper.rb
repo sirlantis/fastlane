@@ -33,7 +33,7 @@ module Fastlane
       exc = nil
 
       begin
-        Helper.log_alert("Step: " + step_name) if step_name
+        UI.header("Step: " + step_name) if step_name
         yield
       rescue => ex
         exc = ex

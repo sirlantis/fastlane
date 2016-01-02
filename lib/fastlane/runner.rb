@@ -66,7 +66,12 @@ module Fastlane
           error_blocks[current_platform].call(current_lane, error_ex, parameters) if error_blocks[current_platform] && current_platform
           error_blocks[nil].call(current_lane, error_ex, parameters) if error_blocks[nil]
         end
-        raise ex
+
+        if ex.kind_of?(FastlaneCore::UserError)
+          raise ex
+        else
+          UI.crash!(ex)
+        end
       end
     end
     # rubocop:enable Metrics/AbcSize
