@@ -5,11 +5,38 @@ module Fastlane
     end
 
     class XcodeInstallAction < Action
+      REQUIRED_VERSION = '~> 1.0.1'
+
+      def self.install_command
+        "gem install xcode-install -v '#{REQUIRED_VERSION}'"
+      end
+
+      def self.require_xcode_install
+        require 'xcode/install'
+      rescue LoadError
+        Helper.log.fatal '##############################################'
+        Helper.log.fatal '# Because of a dependency conflict you have to'
+        Helper.log.fatal '# install the xcode-install gem manually.'
+        Helper.log.fatal '# Run gem install xcode-install to install it'
+        Helper.log.fatal '##############################################'
+        raise "Run \"#{install_command}\" and start fastlane again"
+      end
+
+      def self.require_xcode_install_and_verify_version!
+        require_xcode_install
+        version = XcodeInstall::VERSION
+
+        if version.start_with?('0') || version == '1.0.0'
+          Helper.log.fatal 'Requires xcode-install with version #{REQUIRED_VERSION}'
+          raise "Run \"#{install_command}\" and start fastlane again"
+        end
+      end
+
       def self.run(params)
         ENV["XCODE_INSTALL_USER"] = params[:username]
         ENV["XCODE_INSTALL_TEAM_ID"] = params[:team_id]
 
-        require 'xcode/install'
+        require_xcode_install_and_verify_version!
         installer = XcodeInstall::Installer.new
 
         if installer.installed?(params[:version])
